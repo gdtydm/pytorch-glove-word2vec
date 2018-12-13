@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 from tqdm import tqdm
 
-from tool import CorpusPreprocess, VectorEvaluation
+from tools import CorpusPreprocess, VectorEvaluation
 
 # params
 x_max = 100
