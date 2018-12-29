@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 
 class Word2Vec():
-    def __init__(self,input_file_path, output_vector_path, neg_num=10, epoches = 10,bach_size = 5,windows_size=5, embedding_dim=300, min_count=5, model_class="skip-gram", optimizer_mothod="huffman"):
+    def __init__(self,input_file_path, output_vector_path, neg_num=10, epoches = 10,bach_size = 512,windows_size=5, embedding_dim=300, min_count=5, model_class="skip-gram", optimizer_mothod="huffman"):
         self.min_count = min_count
         self.bach_size = bach_size
         self.neg_num = neg_num
@@ -70,7 +70,7 @@ class Word2Vec():
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                if steps % 100 == 0:
+                if steps % 1000 == 0:
                     print(f"Epoch {epoch} steps {steps}, loss {loss.item()/len(batch)}")
                     
                 steps += 1

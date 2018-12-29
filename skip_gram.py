@@ -21,10 +21,12 @@ class SkipGram(torch.nn.Module):
             self.v_embedding_matrix = torch.nn.Embedding(vocab_size,
                                                          embedding_dim)
 
-
+            self.v_embedding_matrix.weight.data = torch.nn.init.xavier_uniform(self.v_embedding_matrix.weight.data)
+            
+            
             self.u_embedding_matrix = torch.nn.Embedding(vocab_size,
                                                          embedding_dim)
-
+            self.u_embedding_matrix.weight.data = torch.nn.init.xavier_uniform(self.u_embedding_matrix.weight.data)
     def forward(self, pos_v, pos_u, neg_v, neg_u):
 
         if self.optimization_method == "huffman":
