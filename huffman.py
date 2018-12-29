@@ -27,32 +27,30 @@ class HuffmanTree(object):
         self.build_node_code_and_path(self.huffman[-1].right)
         
     def build_tree(self):
-        if len(self.node_heap) <= 1:
-            return
-        # 利用两个词频最小的节点生成新的节点
-        new_node_id = len(self.huffman)
-        f_1, wid_1, node1 = heapq.heappop(self.node_heap)
-        f_2, wid_2, node2 = heapq.heappop(self.node_heap)
-        new_node = Node(new_node_id, f_1 + f_2)
-        # left
-        new_node.left = wid_1
-        node1.is_left = True
-        node1.father = new_node_id
-        # righr
-        new_node.right = wid_2
-        node2.is_left = False
-        node2.father = new_node_id
+        while len(self.node_heap) > 1:
 
-        self.huffman.append(new_node)
-        heapq.heappush(self.node_heap, (new_node.freq, new_node.wid, new_node))
-        if len(self.node_heap) > 1:
-            return self.build_tree()
+            # 利用两个词频最小的节点生成新的节点
+            new_node_id = len(self.huffman)
+            f_1, wid_1, node1 = heapq.heappop(self.node_heap)
+            f_2, wid_2, node2 = heapq.heappop(self.node_heap)
+            new_node = Node(new_node_id, f_1 + f_2)
+            # left
+            new_node.left = wid_1
+            node1.is_left = True
+            node1.father = new_node_id
+            # righr
+            new_node.right = wid_2
+            node2.is_left = False
+            node2.father = new_node_id
+
+            self.huffman.append(new_node)
+            heapq.heappush(self.node_heap, (new_node.freq, new_node.wid, new_node))
 
     def build_node_code_and_path(self, wid):
         if self.huffman[wid].is_left:
-            code = [0]
-        else:
             code = [1]
+        else:
+            code = [0]
         self.huffman[wid].code = self.huffman[self.huffman[wid].father].code + code
         self.huffman[wid].path = [self.huffman[wid].father] + self.huffman[self.huffman[wid].father].path
 
@@ -71,7 +69,7 @@ class HuffmanTree(object):
             right = []
             for i, c in enumerate(self.huffman[wid].code):
 
-                if c == 0:
+                if c == 1:
                     left.append(self.huffman[wid].path[i])
                 else:
                     right.append(self.huffman[wid].path[i])
@@ -81,7 +79,7 @@ class HuffmanTree(object):
 
 
 if __name__ == "__main__":
-    word_frequency = {0: 4, 1: 6, 2: 3, 3: 2, 4: 2, 5:10}
+    word_frequency = {0: 1, 1: 2, 2: 3}
     hft = HuffmanTree(word_frequency)
     lefts, rights = hft.generate_node_left_and_right_path()
     print(f"left: {lefts}\n")

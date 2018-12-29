@@ -14,7 +14,7 @@ python glove.py
 ```
 
 
-**参考**
+**参考**s
 * [Glove](https://nlp.stanford.edu/projects/glove/)
 * [GloVe详解](http://www.fanyeong.com/2018/02/19/glove-in-detail/)
 * [pytorch_word2vec](https://github.com/bamtercelboo/pytorch_word2vec)

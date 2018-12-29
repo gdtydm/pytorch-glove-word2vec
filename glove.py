@@ -46,7 +46,6 @@ class Glove(nn.Module):
                                                                             1, dtype=torch.float,
                                                                             requires_grad=True)/100)
 
-
         # surround words weight and biase
         self.s_weight = nn.Embedding(len(vocab_size), vector_size,
                                      _weight=torch.randn(len(vocab_size),
@@ -121,7 +120,6 @@ def train_model(epoches, corpus_file_name):
     optimizer = torch.optim.Adam(glove.parameters(), lr=learning_rate)
 
     train_data = TrainData(coo_matrix)
-
     data_loader = DataLoader(train_data,
                              batch_size=batch_size,
                              shuffle=True,
@@ -130,14 +128,14 @@ def train_model(epoches, corpus_file_name):
 
     steps = 0
     for epoch in range(epoches):
+        print(f"currently epoch is {epoch}, all epoch is {epoches}")
         avg_epoch_loss = 0
         for i, batch_data in enumerate(data_loader):
             c = batch_data['c']
             s = batch_data['s']
             X_c_s = batch_data['X_c_s']
             W_c_s = batch_data["W_c_s"]
-            optimizer.zero_grad()
-
+            
             if use_gpu:
                 c = c.cuda()
                 s = s.cuda()
@@ -146,6 +144,7 @@ def train_model(epoches, corpus_file_name):
 
             W_c_s_hat = glove(c, s)
             loss = loss_func(W_c_s_hat, X_c_s, W_c_s)
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             avg_epoch_loss += loss/len(train_data)
