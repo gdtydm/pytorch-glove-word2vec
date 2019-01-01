@@ -18,9 +18,9 @@ split_sep = " "
 class CorpusPreprocess(object):
     logger = logging.getLogger("CorpusPreprocess")
 
-    def __init__(self, file_path, min_count):
+    def __init__(self, file_path, min_freq):
         self.file_path = file_path
-        self.min_count = min_count
+        self.min_freq = min_freq
         self.huffman = None
         self.huffman_left = None
         self.huffman_right = None
@@ -42,7 +42,7 @@ class CorpusPreprocess(object):
     def _build_vocab(self):
         for line in self._read_data():
             self.vocab.update(line)
-        self.vocab = dict((w.strip(), f) for w,f in self.vocab.items() if (f >= self.min_count and w.strip()))
+        self.vocab = dict((w.strip(), f) for w,f in self.vocab.items() if (f >= self.min_freq and w.strip()))
         self.vocab = {w:(i, f) for i, (w, f) in enumerate(self.vocab.items())}
         self.idex2word = {i:w for w, (i,f) in self.vocab.items()}
         self.logger.info("build vocab complete!")
@@ -117,8 +117,8 @@ class CorpusPreprocess(object):
         for example in batch_data:
             pos = self.huffman_left[example[1]]
             neg = self.huffman_right[example[1]]
-            batch_data_from_huffman.append(([example[0]] * len(pos),
-            pos,[example[0]] * len(neg), neg))
+            batch_data_from_huffman.append(([example[0]],
+            pos, neg))
         return batch_data_from_huffman
     
     def get_bath_nagative_train_data(self, batch_data, count):
@@ -126,9 +126,9 @@ class CorpusPreprocess(object):
             self.build_vocab_for_nag_sampling()
         batch_nagtive_simples = []
         for example in batch_data:
-            neg = np.random.choice(self.nag_sampling_vocab[0], size=count, p=self.nag_sampling_vocab[1])
-            batch_nagtive_simples.append(([example[0]] ,
-            [example[1]], [example[0]] * len(neg), neg.tolist()))
+            neg = np.random.choice(self.nag_sampling_vocab[0], size=count, p=self.nag_sampling_vocab[1]).tolist()
+            batch_nagtive_simples.append(([example[0]],
+            [example[1]], neg))
         return batch_nagtive_simples
         
 
@@ -212,12 +212,12 @@ class VectorEvaluation(object):
         w_num = min(len(self.vocab), w_num)
         idx = self.vocab.get(word,None)
         if not idx:
-            return
+            idx = random.choice(range(self.vector.shape[0]))
         result = cosine_similarity(self.vector[idx].reshape(1,-1), self.vector)
         result = np.array(result).reshape(len(self.vocab),)
         idxs = np.argsort(result)[::-1][:w_num]
         print("<<<"*7)
-        print(word)
+        print(self.idex2word[idx])
         for i in idxs:
             print("%s : %.3f\n" % (self.idex2word[i], result[i]))
             
@@ -226,8 +226,8 @@ class VectorEvaluation(object):
 
 if __name__ == "__main__":
     from torch.utils.data import DataLoader, Dataset
-    dataset = CorpusPreprocess("./data/text.txt", min_count=1)
-    data = dataset.build_skip_gram_tain_data(3)
+    dataset = CorpusPreprocess("./data/text.txt", min_freq=1)
+    data = dataset.build_cbow_tain_data(3)
     for i in dataset.get_bach_data(data, 3):
         print(i)
         print(dataset.get_bath_nagative_train_data(i,4))

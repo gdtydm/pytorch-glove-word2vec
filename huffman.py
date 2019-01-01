@@ -52,7 +52,7 @@ class HuffmanTree(object):
         else:
             code = [0]
         self.huffman[wid].code = self.huffman[self.huffman[wid].father].code + code
-        self.huffman[wid].path = [self.huffman[wid].father] + self.huffman[self.huffman[wid].father].path
+        self.huffman[wid].path = self.huffman[self.huffman[wid].father].path + [self.huffman[wid].father]
 
         if self.huffman[wid].left is not None:
             self.build_node_code_and_path(self.huffman[wid].left)

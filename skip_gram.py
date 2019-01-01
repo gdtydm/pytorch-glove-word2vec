@@ -11,10 +11,10 @@ from tools import CorpusPreprocess, VectorEvaluation
 
 # params
 class SkipGram(torch.nn.Module):
-    def __init__(self, embedding_dim, vocab_size, optimization_method):
+    def __init__(self, embedding_dim, vocab_size, neg_model=True):
         super(SkipGram, self).__init__()
-        self.optimization_method = optimization_method
-        if self.optimization_method == "huffman":
+        self.neg_model = neg_model
+        if not self.neg_model:
             self.embedding_matrix = torch.nn.Embedding(vocab_size*2-1, embedding_dim)
             self.embedding_matrix.weight.data = torch.nn.init.xavier_uniform(self.embedding_matrix.weight.data)
         else:
@@ -29,7 +29,7 @@ class SkipGram(torch.nn.Module):
             self.u_embedding_matrix.weight.data = torch.nn.init.xavier_uniform(self.u_embedding_matrix.weight.data)
     def forward(self, pos_v, pos_u, neg_v, neg_u):
 
-        if self.optimization_method == "huffman":
+        if not self.neg_model:
             pos_v = self.embedding_matrix(pos_v)
             pos_u = self.embedding_matrix(pos_u)
             neg_v = self.embedding_matrix(neg_v)

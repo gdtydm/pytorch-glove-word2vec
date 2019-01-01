@@ -3,14 +3,16 @@ Word Embadding 作为当下 nlp 领域最流行的技巧。为了深入了解其
 
 `tools.py` 提供文本的预处理，降维可视化等功能。
 `huffman.py` 将词表转化为哈夫曼树。
+`word2vec` skip-gram and cbow
 
-* Glove(已完成)
-* Word2vec(施工中)
+
+
 
 #### running code
 ```python
 python glove.py
 
+python word2vec.py
 ```
 
 
