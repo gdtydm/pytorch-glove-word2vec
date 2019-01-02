@@ -77,7 +77,6 @@ class Word2Vec():
                 data = self.data_processor.build_skip_gram_tain_data(
                     self.windows_size)
             else:
-                self.data_processor.build_huffman_tree()
                 data = self.data_processor.build_cbow_tain_data(
                     self.windows_size)
 

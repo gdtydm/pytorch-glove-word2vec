@@ -226,8 +226,11 @@ class VectorEvaluation(object):
 
 if __name__ == "__main__":
     from torch.utils.data import DataLoader, Dataset
-    dataset = CorpusPreprocess("./data/text.txt", min_freq=1)
-    data = dataset.build_cbow_tain_data(3)
+    dataset = CorpusPreprocess("./data/text.txt", min_freq=0)
+    data = dataset.build_skip_gram_tain_data(3)
+    dataset.build_huffman_tree()
+    print(dataset.huffman_left)
+    print(dataset.huffman_right)
     for i in dataset.get_bach_data(data, 3):
         print(i)
-        print(dataset.get_bath_nagative_train_data(i,4))
+        print(dataset.get_bath_huffman_tree_sample(i))
