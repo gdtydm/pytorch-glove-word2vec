@@ -102,9 +102,13 @@ class Word2Vec():
                 input_type = torch.LongTensor
                 if self.use_cuda:
                     input_type = torch.cuda.LongTensor
-                pos_v = input_type(pos_v)
+                if self.use_skip_gram:
+                    pos_v = input_type(pos_v)
+                    neg_v = input_type(neg_v)
+                else:
+                    pos_v = [input_type(i) for i in pos_v]
+                    neg_v = [input_type(i) for i in neg_v]
                 pos_u = input_type(pos_u)
-                neg_v = input_type(neg_v)
                 neg_u = input_type(neg_u)
                 loss = self.model(pos_v, pos_u, neg_v, neg_u)
                 optimizer.zero_grad()
@@ -145,6 +149,6 @@ class Word2Vec():
 
 if __name__ == "__main__":
     # use huffman
-    args = creat_params(neg_model=False)
+    args = creat_params(neg_model=False, use_skip_gram=False)
     w2v = Word2Vec(args)
     w2v.train_model()

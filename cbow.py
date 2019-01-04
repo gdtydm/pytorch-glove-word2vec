@@ -21,18 +21,54 @@ class COBW(torch.nn.Module):
  
     def forward(self, pos_v, pos_u, neg_v, neg_u):
         if not self.neg_model:
-            pos_v = self.embedding_matrix(pos_v)
+            pos_v_em = None
+            for i in pos_v:
+                i = self.embedding_matrix(i)
+                i = torch.mean(i, dim=0, keepdim=True)
+                if pos_v_em is None:
+                    pos_v_em = i
+                else:
+                    pos_v_em = torch.cat((pos_v_em, i), dim=0)
+            pos_v = pos_v_em
+
             pos_u = self.embedding_matrix(pos_u)
-            neg_v = self.embedding_matrix(neg_v)
+
+            neg_v_em = None
+            for i in neg_v:
+                i = self.embedding_matrix(i)
+                i = torch.mean(i, dim=0, keepdim=True)
+                if neg_v_em is None:
+                    neg_v_em = i
+                else:
+                    neg_v_em = torch.cat((neg_v_em, i), dim=0)
+            neg_v = neg_v_em
+
             neg_u = self.embedding_matrix(neg_u)
         else:
-            pos_v = self.v_embedding_matrix(pos_v)
+            pos_v_em = None
+            for i in pos_v:
+                i = self.v_embedding_matrix(i)
+                i = torch.mean(i, dim=0, keepdim=True)
+            if pos_v_em is None:
+                pos_v_em = i
+            else:
+                pos_v_em = torch.cat((pos_v_em, i), dim=0)
+            pos_v = pos_v_em
+
             pos_u = self.u_embedding_matrix(pos_u)
-            neg_v = self.v_embedding_matrix(neg_v)
+
+            neg_v_em = None
+            for i in neg_v:
+                i = self.v_embedding_matrix(i)
+                i = torch.mean(i, dim=0, keepdim=True)
+            if neg_v_em is None:
+                neg_v_em = i
+            else:
+                neg_v_em = torch.cat((neg_v_em, i), dim=0)
+            neg_v = neg_v_em
+
             neg_u = self.u_embedding_matrix(neg_u)
         
-        pos_v = torch.mean(pos_v, axis=1)
-        neg_v = torch.mean(neg_v, axis=1)
         pos_z = torch.sum(pos_v.mul(pos_u), dim = 1,keepdim=True)
         neg_z = torch.sum(neg_v.mul(neg_u), dim = 1,keepdim=True)
 
