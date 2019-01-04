@@ -8,20 +8,17 @@ class COBW(torch.nn.Module):
         if not self.neg_model:
             self.embedding_matrix = torch.nn.Embedding(
                 vocab_size*2-1, embedding_dim)
-            self.embedding_matrix.weight.data = torch.nn.init.xavier_uniform(
-                self.embedding_matrix.weight.data)
+            torch.nn.init.xavier_uniform_(self.embedding_matrix.weight.data)
         else:
             self.v_embedding_matrix = torch.nn.Embedding(vocab_size,
                                                          embedding_dim)
 
-            self.v_embedding_matrix.weight.data = torch.nn.init.xavier_uniform(
-                self.v_embedding_matrix.weight.data)
+            torch.nn.init.xavier_uniform_(self.v_embedding_matrix.weight.data)
 
             self.u_embedding_matrix = torch.nn.Embedding(vocab_size,
                                                          embedding_dim)
-            self.u_embedding_matrix.weight.data = torch.nn.init.xavier_uniform(
-                self.u_embedding_matrix.weight.data)
-
+            self.u_embedding_matrix.weight.data.uniform_(0, 0)
+ 
     def forward(self, pos_v, pos_u, neg_v, neg_u):
         if not self.neg_model:
             pos_v = self.embedding_matrix(pos_v)
