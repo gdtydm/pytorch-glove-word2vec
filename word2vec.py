@@ -13,8 +13,8 @@ def creat_params(input_file_path="./data/zhihu.txt",
                  output_vector_path="./data/vector.txt",
                  eval_picture_path="./data/eval_vec.png",
                  neg_num=16, epoches=10,
-                 bach_size=256, windows_size=5,
-                 embedding_dim=300, min_freq=5,
+                 bach_size=128, windows_size=5,
+                 embedding_dim=100, min_freq=5,
                  neg_model=True, use_skip_gram=True):
 
     mytuple = namedtuple("word2vec",
@@ -116,7 +116,7 @@ class Word2Vec():
                 optimizer.step()
                 if steps % 1000 == 0:
                     print(
-                        f"Epoch {epoch} steps {steps}, loss {loss.item()/len(batch)}")
+                        f"Epoch {epoch} steps {steps}, loss {loss.item()/len(batch)}, learn_rate:{optimizer.param_groups[0]['lr']}")
 
                 steps += 1
         self.save_vector()
